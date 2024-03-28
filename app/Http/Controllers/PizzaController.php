@@ -15,7 +15,20 @@ class PizzaController extends Controller
     public function index()
     {
         $pizzas = Pizza::all(); // Retrieve all pizzas from the database
-        return view('pizza.index', ['pizzas' => $pizzas, 'orders' => $this->orders]);
+
+
+
+            return view('pizza.index', ['pizzas' => $pizzas, 'orders' => $this->orders]);
+        }
+
+
+
+    private function checkIfUserIsAdmin()
+    {
+
+
+
+        // Check if the user exists and if they have admin role
 
     }
     public function admin()
@@ -30,8 +43,11 @@ class PizzaController extends Controller
     public function create()
     {
         // Retrieve distinct categories from the pizzas
-        $categories = Pizza::select('pizza_category')->distinct()->pluck('pizza_category');
-        return view('pizza.create', compact('categories'));
+
+            $categories = Pizza::select('pizza_category')->distinct()->pluck('pizza_category');
+            return view('pizza.create', compact('categories'));
+
+
     }
     public function __construct()
     {
@@ -137,7 +153,7 @@ class PizzaController extends Controller
 
     public function addToOrder(Request $request){
         $pizzaId = $request->input('pizza_id');
-        $size = $request->input('pizza_size'); // Corrected input name to 'pizza_size'
+        $size = $request->input('pizza_size');
 
         // Perform any necessary validation or checks here
 
@@ -180,4 +196,5 @@ class PizzaController extends Controller
             session(['orders'=>$orders]);
         }
     }
+
 }
