@@ -29,3 +29,4 @@ Route::delete('/pizza/{key}/remove_from_order',[App\Http\Controllers\PizzaContro
 Route::put('/pizza/{id}/update', [App\Http\Controllers\PizzaController::class, 'update'])->name('pizza.update');
 Route::get('/admin.index',[App\Http\Controllers\PizzaController::class,'admin'])->name('admin');
 Route::delete('/pizza/{id}/delete', [App\Http\Controllers\PizzaController::class, 'destroy'])->name('pizza.destroy');
+Route::post('pizza/order',[App\Http\Controllers\PizzaController::class,'makeOrder'])->name('order');

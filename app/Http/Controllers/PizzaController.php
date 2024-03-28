@@ -5,6 +5,9 @@ use App\Http\Requests\PizzaStoreRequest;
 use App\Http\Requests\PizzaUpdateRequest;
 use App\Models\Pizza;
 use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\User;
+use App\Models\Order_details;
 
 class PizzaController extends Controller
 {
@@ -12,6 +15,7 @@ class PizzaController extends Controller
      * Display a listing of the resource.
      */
     public $orders = [];
+    public $price=0.0;
     public function index()
     {
         $pizzas = Pizza::all(); // Retrieve all pizzas from the database
@@ -172,12 +176,23 @@ class PizzaController extends Controller
 
     private function addToOrderLogic($pizzaId, $size) {
         $pizza = Pizza::find($pizzaId);
+        if ($size='small'){
+            $price=$pizza->pizza_small_price;
+        }
+        elseif ($size='medium'){
+            $price=$pizza->pizza_medium_price;
+        }
+        else{
+            $price=$pizza->pizza_large_price;
+        }
 
         // Retrieve orders from session storage
         $orders = session('orders', []);
 
         // Append the new order to the existing array
-        $orders[] = ['pizza' => $pizza, 'size' => $size];
+        $orders[] = ['pizza' => $pizza, 'size' => $size,'price'=>$price];
+
+
 
         // Store updated orders back into session storage so that they remain
         session(['orders' => $orders]);
@@ -195,6 +210,26 @@ class PizzaController extends Controller
             unset($orders[$key]);
             session(['orders'=>$orders]);
         }
+    }
+    public function makeOrder(){
+        $orders = session('orders', []);
+        $order=Order::create([
+            'user_id'=>auth()->user(),
+            'date'=>date(),
+            'price'=>array_sum($orders['price'])
+
+        ]);
+        foreach ($orders as $orderItem) {
+            Order_details::create([
+                'order_id' => $order->id,
+                'pizza_id' => $orderItem['pizza']->id,
+                'size'=>$orderItem['size'],
+                'price'=>$orderItem['price']
+
+            ]);
+        }
+
+
     }
 
 }
