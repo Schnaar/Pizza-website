@@ -10,4 +10,8 @@ class Pizza extends Model
     use HasFactory;
 
     protected $guarded=[];
+    public function orderDetail()
+    {
+        return $this->hasOne(OrderDetail::class, 'pizza_id');
+    }
 }

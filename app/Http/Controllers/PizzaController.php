@@ -14,27 +14,25 @@ class PizzaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public $orders = [];
+    public $items = [];
 
     public function index()
     {
         $pizzas = Pizza::all(); // Retrieve all pizzas from the database
+        $orders = Order::query()
+            ->where('user_id', auth()->id())
+            ->get();
+        $order_details=Order_details::all();
 
 
 
-            return view('pizza.index', ['pizzas' => $pizzas, 'orders' => $this->orders]);
+
+        return view('pizza.index', ['pizzas' => $pizzas, 'items' => $this->items,'orders'=>$orders,'order_details'=>$order_details]);
         }
 
 
 
-    private function checkIfUserIsAdmin()
-    {
 
-
-
-        // Check if the user exists and if they have admin role
-
-    }
     public function admin()
     {
         $pizza=Pizza::all();
@@ -165,13 +163,13 @@ class PizzaController extends Controller
         $this->addToOrderLogic($pizzaId, $size);
 
         // Retrieve orders from session storage
-        $orders = session('orders', []);
+        $items = session('orders', []);
 
         // Retrieve pizzas from the database
         $pizzas = Pizza::all();
 
         // Redirect back or to a specific route
-        return view('pizza.index', ['pizzas' => $pizzas, 'orders' => $orders]);
+        return view('pizza.index', ['pizzas' => $pizzas, 'items' => $items]);
     }
 
     private function addToOrderLogic($pizzaId, $size) {
@@ -186,26 +184,26 @@ class PizzaController extends Controller
             $price=$pizza->pizza_large_price;
         }
 
-        // Retrieve orders from session storage
-        $orders = session('orders', []);
+        // Retrieve items from session storage
+        $items = session('items', []);
 
         // Append the new order to the existing array
-        $orders[] = ['pizza' => $pizza, 'size' => $size,'price'=>$price];
+        $items[] = ['pizza' => $pizza, 'size' => $size,'price'=>$price];
 
 
 
-        // Store updated orders back into session storage so that they remain
-        session(['orders' => $orders]);
+        // Store updated items back into session storage so that they remain
+        session(['items' => $items]);
     }
     public function removeFromOrder(Request $request,$key){
         $this->removeFromOrderLogic($key);
-        $orders = session('orders', []);
+        $items = session('items', []);
         $pizzas = Pizza::all();
-        return view('pizza.index', ['pizzas' => $pizzas, 'orders' => $orders]);
+        return view('pizza.index', ['pizzas' => $pizzas, 'items' => $items]);
     }
 
     private function removeFromOrderLogic($key){
-        $orders = session('orders', []);
+        $orders = session('items', []);
         if (isset($orders[$key])) { // Check if key exists before unsetting
             unset($orders[$key]);
             session(['orders'=>$orders]);
@@ -213,8 +211,8 @@ class PizzaController extends Controller
     }
     public function makeOrder(){
         $totalPrice=0.00;
-        $orders = session('orders', []);
-        foreach ($orders as $order) {
+        $items = session('items', []);
+        foreach ($items as $order) {
             $totalPrice += $order['price'];
         }
         $order=order::create([
@@ -223,7 +221,7 @@ class PizzaController extends Controller
             'price'=>$totalPrice
 
         ]);
-        foreach ($orders as $orderItem) {
+        foreach ($items as $orderItem) {
             Order_details::create([
                 'order_id' => $order->id,
                 'pizza_id' => $orderItem['pizza']->id,
@@ -233,7 +231,7 @@ class PizzaController extends Controller
             ]);
         }
         $pizzas = Pizza::all();
-        return view('pizza.index', ['pizzas' => $pizzas, 'items' => $orders]);
+        return view('pizza.index', ['pizzas' => $pizzas, 'items' => $items]);
 
 
     }

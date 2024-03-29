@@ -145,6 +145,49 @@
 
                             </tbody>
                         </table>
+                        <div class="card-header">{{ __('Previous orders') }}</div>
+                        <div class="card-body">
+                        <table class="table table-hover">
+
+                            <thead>
+                            <tr>
+
+                                <th scope="col">name</th>
+                                <th scope="col">description</th>
+                                <th scope="col">Pizza Category</th>
+                                <th scope="col">Size</th>
+
+                            </tr>
+                            </thead>
+                        </table>
+                        @foreach($orders as $order)
+
+                            <table class="table table-hover">
+
+                                <tbody>
+                                <tr>
+                                    <td>{{'details for order'}}</td>
+                                    <td>{{$order['id']}}</td>
+                                </tr>
+                                {{-- pulling the table data --}}
+                                @foreach($order_details as $order_detail)
+                                    @if ($order_detail['order_id']==$order['id'])
+
+                                        <tr>
+
+                                            <td>{{ $order_detail->pizza->pizza_name }}</td>
+                                            <td>{{ $order_detail->pizza->pizza_desc }}</td>
+                                            <td>{{ $order_detail->pizza->pizza_category}}</td>
+                                            <td>{{ $order_detail->size }}</td>
+
+                                    @endif
+                                @endforeach
+
+                                </tbody>
+                            </table>
+                        @endforeach
+                        </div>
+                    </div>
 
                     </div>
                 </div>
