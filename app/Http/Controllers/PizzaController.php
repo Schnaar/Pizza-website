@@ -15,7 +15,7 @@ class PizzaController extends Controller
      * Display a listing of the resource.
      */
     public $orders = [];
-    public $price=0.0;
+
     public function index()
     {
         $pizzas = Pizza::all(); // Retrieve all pizzas from the database
@@ -176,10 +176,10 @@ class PizzaController extends Controller
 
     private function addToOrderLogic($pizzaId, $size) {
         $pizza = Pizza::find($pizzaId);
-        if ($size='small'){
+        if ($size=='small'){
             $price=$pizza->pizza_small_price;
         }
-        elseif ($size='medium'){
+        elseif ($size=='medium'){
             $price=$pizza->pizza_medium_price;
         }
         else{
@@ -212,11 +212,15 @@ class PizzaController extends Controller
         }
     }
     public function makeOrder(){
+        $totalPrice=0.00;
         $orders = session('orders', []);
-        $order=Order::create([
-            'user_id'=>auth()->user(),
-            'date'=>date(),
-            'price'=>array_sum($orders['price'])
+        foreach ($orders as $order) {
+            $totalPrice += $order['price'];
+        }
+        $order=order::create([
+            'user_id'=>auth()->id(),
+            'date'=>date("d/m/y"),
+            'price'=>$totalPrice
 
         ]);
         foreach ($orders as $orderItem) {
@@ -228,6 +232,8 @@ class PizzaController extends Controller
 
             ]);
         }
+        $pizzas = Pizza::all();
+        return view('pizza.index', ['pizzas' => $pizzas, 'items' => $orders]);
 
 
     }
