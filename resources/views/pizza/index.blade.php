@@ -160,32 +160,35 @@
                             </tr>
                             </thead>
                         </table>
-                        @foreach($orders as $order)
+                            @if(isset($orders))
+                                @foreach($orders as $order)
 
-                            <table class="table table-hover">
+                                <table class="table table-hover">
 
-                                <tbody>
-                                <tr>
-                                    <td>{{'details for order'}}</td>
-                                    <td>{{$order['id']}}</td>
-                                </tr>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{'details for order'}}</td>
+                                        <td>{{$order['id']}}</td>
+                                    </tr>
                                 {{-- pulling the table data --}}
-                                @foreach($order_details as $order_detail)
-                                    @if ($order_detail['order_id']==$order['id'])
+                                    @foreach($order_details as $order_detail)
+                                        @if ($order_detail['order_id']==$order['id'])
 
-                                        <tr>
+                                            <tr>
 
-                                            <td>{{ $order_detail->pizza->pizza_name }}</td>
-                                            <td>{{ $order_detail->pizza->pizza_desc }}</td>
-                                            <td>{{ $order_detail->pizza->pizza_category}}</td>
-                                            <td>{{ $order_detail->size }}</td>
+                                                <td>{{ $order_detail->pizza->pizza_name }}</td>
+                                                <td>{{ $order_detail->pizza->pizza_desc }}</td>
+                                                <td>{{ $order_detail->pizza->pizza_category}}</td>
+                                                <td>{{ $order_detail->size }}</td>
 
-                                    @endif
-                                @endforeach
+                                       @endif
+                                  @endforeach
+
 
                                 </tbody>
                             </table>
                         @endforeach
+                            @endif
                         </div>
                     </div>
 

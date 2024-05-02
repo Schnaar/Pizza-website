@@ -22,6 +22,7 @@ class PizzaController extends Controller
         $orders = Order::query()
             ->where('user_id', auth()->id())
             ->get();
+
         $order_details=Order_details::all();
 
 
