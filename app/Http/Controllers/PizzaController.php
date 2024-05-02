@@ -164,7 +164,7 @@ class PizzaController extends Controller
         $this->addToOrderLogic($pizzaId, $size);
 
         // Retrieve orders from session storage
-        $items = session('orders', []);
+        $items = session('items', []);
 
         // Retrieve pizzas from the database
         $pizzas = Pizza::all();
@@ -191,8 +191,6 @@ class PizzaController extends Controller
         // Append the new order to the existing array
         $items[] = ['pizza' => $pizza, 'size' => $size,'price'=>$price];
 
-
-
         // Store updated items back into session storage so that they remain
         session(['items' => $items]);
     }
@@ -204,10 +202,10 @@ class PizzaController extends Controller
     }
 
     private function removeFromOrderLogic($key){
-        $orders = session('items', []);
-        if (isset($orders[$key])) { // Check if key exists before unsetting
-            unset($orders[$key]);
-            session(['orders'=>$orders]);
+        $items = session('items', []);
+        if (isset($items[$key])) { // Check if key exists before unsetting
+            unset($items[$key]);
+            session(['items'=>$items]);
         }
     }
     public function makeOrder(){
