@@ -138,13 +138,30 @@
                                     <td colspan="7">No orders to display</td>
                                 </tr>
                             @endif
-                            <form action="{{ route('order') }}" method="POST">
-                                @csrf
-                                <button type="submit">Order</button>
-                            </form>
+
+
 
                             </tbody>
                         </table>
+                        <div class="row">
+                        <form action="{{ route('order') }}" method="POST">
+                            @csrf
+                            <button type="submit">Order</button>
+                        </form>
+                        <form>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="collection" name="deliveryOption" value="collection">
+                                    <label class="form-check-label" for="collection">Collection</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" id="delivery" name="deliveryOption" value="delivery">
+                                    <label class="form-check-label" for="delivery">Delivery</label>
+                                </div>
+                            </div>
+                        </form>
+                        <p>Total Price: ${{ collect($items)->sum('price') }}</p>
+                        </div>
                         <div class="card-header">{{ __('Previous orders') }}</div>
                         <div class="card-body">
                         <table class="table table-hover">
@@ -183,6 +200,11 @@
 
                                        @endif
                                   @endforeach
+                                                <form method="POST" action="{{ route('ReOrder') }}">
+                                                    @csrf <!-- CSRF token -->
+                                                    <input type="hidden" name="order_id" value="{{ $order->id }}">
+                                                    <button type="submit" class="btn btn-primary">ReOrder</button>
+                                                </form>
 
 
                                 </tbody>

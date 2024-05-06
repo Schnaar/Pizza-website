@@ -234,5 +234,22 @@ class PizzaController extends Controller
 
 
     }
+    public function ReOrder(Request $request){
+        $order_id = $request->input('order_id');
+        $originalOrder = Order::find($order_id);
+        $clonedOrder = $originalOrder->replicate();
+        $clonedOrder->date = date("d/m/y");
+        $clonedOrder->save();
+        $order_details = Order_details::query()
+            ->where('order_id', $order_id)
+            ->get();
+        foreach ($order_details as $order_detail) {
+            $clonedOrderDetail = $order_detail->replicate();
+            $clonedOrderDetail->order_id = $clonedOrder->id;
+            $clonedOrderDetail->save();
+        }
+        return redirect()->route('pizza.index')->with('success', 'Order reordered successfully.');
+
+    }
 
 }

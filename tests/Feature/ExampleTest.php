@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Support\Facades\Auth;
+
 
 class ExampleTest extends TestCase
 {
@@ -16,4 +18,9 @@ class ExampleTest extends TestCase
 
         $response->assertOk();
     }
+    public function test_auth(): void
+    {
+        Auth::shouldReceive('id')->andReturn(1);
+    }
+
 }
