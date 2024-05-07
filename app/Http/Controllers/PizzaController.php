@@ -216,7 +216,7 @@ class PizzaController extends Controller
         }
         $order=order::create([
             'user_id'=>auth()->id(),
-            'date'=>date("d/m/y"),
+            'date'=>date("y/m/d"),
             'price'=>$totalPrice
 
         ]);
